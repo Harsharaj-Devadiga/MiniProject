@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.MiniProject.FirstEvaluation.models.Questionnaire;
 
 @Repository
-public interface QuestionnaireRepository extends JpaRepository<Questionnaire, Integer>{
-	
+public interface QuestionnaireRepository extends JpaRepository<Questionnaire, Integer> {
+
 	Optional<Questionnaire> findById(int Id);
 }

@@ -20,16 +20,16 @@ public class ChangePasswordController {
 
 	@Autowired
 	private EmployeeService employeeService;
-	
+
 	@Autowired
 	PasswordEncoder encoder;
-	
+
 	@PutMapping("/changePassword/{id}")
 	@PreAuthorize("hasRole('SUPERADMIN')")
 	@ResponseStatus(HttpStatus.CREATED)
-	public String changePassword(@RequestParam String password,@PathVariable String id) {
-		Optional<Employee> emp=employeeService.findById(id);
-		Employee employee=emp.get();
+	public String changePassword(@RequestParam String password, @PathVariable String id) {
+		Optional<Employee> emp = employeeService.findById(id);
+		Employee employee = emp.get();
 		employee.setPassword(encoder.encode(password));
 		employeeService.save(employee);
 		return "Password Updated";

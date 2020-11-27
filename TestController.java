@@ -12,7 +12,7 @@ public class TestController {
 	public String allAccess() {
 		return "Public Content.";
 	}
-	
+
 	@GetMapping("/user")
 	@PreAuthorize("hasRole('USER') or hasRole('SUPERADMIN') or hasRole('ADMIN')")
 	public String userAccess() {
@@ -31,4 +31,3 @@ public class TestController {
 		return "Admin Board.";
 	}
 }
-

@@ -7,9 +7,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import com.MiniProject.FirstEvaluation.config.FileStoragePojo;
 
 @SpringBootApplication
-@EnableConfigurationProperties({
-    FileStoragePojo.class
-})
+@EnableConfigurationProperties({ FileStoragePojo.class })
 public class FirstEvaluationApplication {
 
 	public static void main(String[] args) {

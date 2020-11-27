@@ -50,12 +50,6 @@ public class FileStorageController {
 		return new UploadFileResponse(fileName, fileDownloadUri, file.getContentType(), file.getSize());
 	}
 
-//	@PostMapping("/uploadMultipleFiles")
-//	@PreAuthorize("hasRole('SUPERADMIN')or hasRole('ADMIN')")
-//	public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
-//		return Arrays.asList(files).stream().map(file -> uploadSingleFile(file)).collect(Collectors.toList());
-//	}
-
 	@GetMapping("/downloadFile/{fileName:.+}")
 	public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
 		Resource resource = fileStorageService.loadFileAsResource(fileName);

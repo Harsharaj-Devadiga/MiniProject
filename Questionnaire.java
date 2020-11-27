@@ -38,12 +38,12 @@ public class Questionnaire {
 
 	@Column(name = "end_date")
 	private String endDate;
-	
+
 	@Column(name = "mail_body")
 	private String mailBody;
 
-	public Questionnaire(String title, String description, String buttonText, String buttonTitle,
-			String checkboxText,String startDate, String endDate,String mailBody) {
+	public Questionnaire(String title, String description, String buttonText, String buttonTitle, String checkboxText,
+			String startDate, String endDate, String mailBody) {
 		this.title = title;
 		this.description = description;
 		this.buttonText = buttonText;
@@ -58,7 +58,6 @@ public class Questionnaire {
 
 	}
 
-	
 	public int getId() {
 		return id;
 	}

@@ -36,7 +36,7 @@ public class ForgotPasswordController {
 		Employee employee = emp.get();
 		String password = employee.generatePassword();
 		String subject = "The Password has been Reset";
-		String text="The Reset password is"+password;
+		String text = "The Reset password is" + password;
 		employee.setPassword(encoder.encode(password));
 		employeeService.save(employee);
 		try {

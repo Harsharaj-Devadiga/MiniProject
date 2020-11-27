@@ -22,6 +22,7 @@ import com.MiniProject.FirstEvaluation.models.Role;
 import com.MiniProject.FirstEvaluation.repository.RoleRepository;
 import com.MiniProject.FirstEvaluation.service.EmployeeService;
 import com.MiniProject.FirstEvaluation.service.MailService;
+import com.MiniProject.FirstEvaluation.service.MapService;
 import com.MiniProject.FirstEvaluation.service.QuestionnaireService;
 
 @RestController
@@ -35,17 +36,20 @@ public class PublishController {
 
 	@Autowired
 	PasswordEncoder encoder;
-	
+
 	@Autowired
 	private QuestionnaireService questionnaireService;
-	
+
 	@Autowired
 	private MailService mailservice;
+
+	@Autowired
+	private MapService mapService;
 
 	@PostMapping("/publish/{questionnaire_id}")
 	@PreAuthorize("hasRole('SUPERADMIN')or hasRole('ADMIN')")
 	@ResponseStatus(HttpStatus.CREATED)
-	public MailException addUser(@RequestBody List<Employee> employeeList,@PathVariable int questionnaire_id) {
+	public MailException addUser(@RequestBody List<Employee> employeeList, @PathVariable int questionnaire_id) {
 		try {
 			Optional<Questionnaire> questionnaire = questionnaireService.findById(questionnaire_id);
 			Questionnaire question = questionnaire.get();
@@ -55,13 +59,16 @@ public class PublishController {
 						.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 				role.add(userRole);
 				employee.setRoles(role);
-				
+
 				String password = employee.generatePassword();
 				employee.setPassword(encoder.encode(password));
 				service.save(employee);
 
+				mapService.setData(employee.getId(), question.getId(), 0);
+
 				String subject = "You are added as an user";
-				String text="Hello "+employee.getUsername()+"\n "+question.getMailBody()+"\n Username : "+employee.getUsername()+"\n Password : "+password+"\n Thank you ";
+				String text = "Hello " + employee.getUsername() + "\n " + question.getMailBody() + "\n Username : "
+						+ employee.getUsername() + "\n Password : " + password + "\n Thank you ";
 				mailservice.sendEmail(employee, subject, text);
 			}
 		} catch (MailException mailException) {

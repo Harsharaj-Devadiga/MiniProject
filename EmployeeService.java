@@ -22,7 +22,7 @@ public class EmployeeService {
 	public void delete(String id) {
 		repo.deleteById(id);
 	}
-	
+
 	public Optional<Employee> findById(String id) {
 		return repo.findById(id);
 	}
@@ -31,11 +31,11 @@ public class EmployeeService {
 		return repo.findByEmail(mail);
 	}
 
-	public List<String> findAdminDetails(){
+	public List<String> findAdminDetails() {
 		return repo.findAdminDetails();
 	}
-	
-	public List<String> findSuperAdminDetails(){
+
+	public List<String> findSuperAdminDetails() {
 		return repo.findSuperAdminDetails();
 	}
 }

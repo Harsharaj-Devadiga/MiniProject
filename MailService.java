@@ -13,18 +13,19 @@ public class MailService {
 
 	@Autowired
 	private JavaMailSender javaMailSender;
-	
+
 	@Autowired
 	public MailService(JavaMailSender javaMailSender) {
-		this.javaMailSender=javaMailSender;
+		this.javaMailSender = javaMailSender;
 	}
-	
-	public void sendEmail(Employee emp,String subject,String text)throws MailException{
-		SimpleMailMessage mail=new SimpleMailMessage();
+
+	public void sendEmail(Employee emp, String subject, String text) throws MailException {
+		SimpleMailMessage mail = new SimpleMailMessage();
 		mail.setTo(emp.getEmail());
 		mail.setSubject(subject);
 		mail.setText(text);
-		
+
 		javaMailSender.send(mail);
 	}
+
 }

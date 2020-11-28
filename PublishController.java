@@ -2,6 +2,7 @@ package com.MiniProject.FirstEvaluation.controller;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
@@ -49,7 +50,8 @@ public class PublishController {
 	@PostMapping("/publish/{questionnaire_id}")
 	@PreAuthorize("hasRole('SUPERADMIN')or hasRole('ADMIN')")
 	@ResponseStatus(HttpStatus.CREATED)
-	public MailException addUser(@RequestBody List<Employee> employeeList, @PathVariable int questionnaire_id) {
+	public MailException addUser(@RequestBody List<Employee> employeeList, @PathVariable int questionnaire_id)
+			throws NoSuchElementException {
 		try {
 			Optional<Questionnaire> questionnaire = questionnaireService.findById(questionnaire_id);
 			Questionnaire question = questionnaire.get();

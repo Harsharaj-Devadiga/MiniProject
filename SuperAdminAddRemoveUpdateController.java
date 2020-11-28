@@ -109,31 +109,39 @@ public class SuperAdminAddRemoveUpdateController {
 	@PreAuthorize("hasRole('SUPERADMIN')")
 	@ResponseStatus(HttpStatus.CREATED)
 	public String updateAdmin(@RequestBody Employee employee, @PathVariable String id) {
-		Set<Role> role = new HashSet<>();
-		Role adminRole = roleRepository.findByName("ROLE_ADMIN")
-				.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-		role.add(adminRole);
-		employee.setRoles(role);
-		employee.setId(id);
-		String password = employee.generatePassword();
-		employee.setPassword(encoder.encode(password));
-		employeeService.save(employee);
-		return "Admin Updated Successfully with password " + password;
+		try {
+			Set<Role> role = new HashSet<>();
+			Role adminRole = roleRepository.findByName("ROLE_ADMIN")
+					.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+			role.add(adminRole);
+			employee.setRoles(role);
+			employee.setId(id);
+			String password = employee.generatePassword();
+			employee.setPassword(encoder.encode(password));
+			employeeService.save(employee);
+			return "Admin Updated Successfully with password " + password;
+		} catch (NoSuchElementException e) {
+			return "NOT_FOUND";
+		}
 	}
 
 	@PutMapping("/updateSuperAdmin/{id}")
 	@PreAuthorize("hasRole('SUPERADMIN')")
 	@ResponseStatus(HttpStatus.CREATED)
 	public String updateSuperAdmin(@RequestBody Employee employee, @PathVariable String id) {
-		Set<Role> role = new HashSet<>();
-		Role adminRole = roleRepository.findByName("ROLE_SUPERADMIN")
-				.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-		role.add(adminRole);
-		employee.setRoles(role);
-		employee.setId(id);
-		String password = employee.generatePassword();
-		employee.setPassword(encoder.encode(password));
-		employeeService.save(employee);
-		return "SuperAdmin Updates Successfully with password " + password;
+		try {
+			Set<Role> role = new HashSet<>();
+			Role adminRole = roleRepository.findByName("ROLE_SUPERADMIN")
+					.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+			role.add(adminRole);
+			employee.setRoles(role);
+			employee.setId(id);
+			String password = employee.generatePassword();
+			employee.setPassword(encoder.encode(password));
+			employeeService.save(employee);
+			return "SuperAdmin Updates Successfully with password " + password;
+		} catch (NoSuchElementException e) {
+			return "NOT_FOUND";
+		}
 	}
 }

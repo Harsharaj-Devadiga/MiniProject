@@ -2,6 +2,7 @@ package com.MiniProject.FirstEvaluation.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.MiniProject.FirstEvaluation.models.Employee;
 import com.MiniProject.FirstEvaluation.models.QuestionnaireMapping;
+import com.MiniProject.FirstEvaluation.response.ReportResponse;
 import com.MiniProject.FirstEvaluation.service.EmployeeService;
 import com.MiniProject.FirstEvaluation.service.MapService;
 
@@ -29,18 +31,17 @@ public class GenerateReport {
 	@GetMapping("/generateReport/{questionnaire_id}")
 	@PreAuthorize("hasRole('SUPERADMIN')or hasRole('ADMIN')")
 	@ResponseStatus(HttpStatus.CREATED)
-	public List<Object> generateReport(@PathVariable int questionnaire_id) {
+	public List<ReportResponse> generateReport(@PathVariable int questionnaire_id) throws NoSuchElementException {
 		List<QuestionnaireMapping> questionMap = mapService.findByQuestionId(questionnaire_id);
-		List<Object> reportList = new ArrayList<Object>();
+		List<ReportResponse> reportList = new ArrayList<ReportResponse>();
 		for (QuestionnaireMapping map : questionMap) {
 			String empId = map.getEmpId();
 			Optional<Employee> employee = employeeService.findById(empId);
 			Employee emp = employee.get();
 			String username = emp.getUsername();
 			int status = map.getStatus();
-			reportList.add("Employee Id: " + empId);
-			reportList.add("Username: " + username);
-			reportList.add("Status: " + status);
+			ReportResponse report=new ReportResponse(empId, username, status);
+			reportList.add(report);
 		}
 		return reportList;
 	}

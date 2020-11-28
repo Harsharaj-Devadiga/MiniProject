@@ -1,5 +1,6 @@
 package com.MiniProject.FirstEvaluation.controller;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class StatusController {
 	@PutMapping("/agree/{employee_id}/{questionnaire_id}")
 	@PreAuthorize("hasRole('SUPERADMIN')or hasRole('ADMIN')or hasRole('USER')")
 	@ResponseStatus(HttpStatus.CREATED)
-	public String agreeCommand(@PathVariable String employee_id, @PathVariable int questionnaire_id) {
+	public String agreeCommand(@PathVariable String employee_id, @PathVariable int questionnaire_id) throws NoSuchElementException{
 		Optional<QuestionnaireMapping> statusMapping = mapService.findByTwoValues(employee_id, questionnaire_id);
 		QuestionnaireMapping statusMap = statusMapping.get();
 		statusMap.setStatus(1);

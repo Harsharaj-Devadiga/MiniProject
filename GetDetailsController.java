@@ -1,6 +1,7 @@
 package com.MiniProject.FirstEvaluation.controller;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,23 +27,30 @@ public class GetDetailsController {
 	@GetMapping("/getAdmins")
 	@PreAuthorize("hasRole('SUPERADMIN')")
 	@ResponseStatus(HttpStatus.OK)
-	public List<String> getAdmins() {
+	public List<String> getAdmins() throws NoSuchElementException {
 		return employeeService.findAdminDetails();
 	}
 
 	@GetMapping("/getSuperAdmins")
 	@PreAuthorize("hasRole('SUPERADMIN')")
 	@ResponseStatus(HttpStatus.OK)
-	public List<String> getSuperAdmins() {
+	public List<String> getSuperAdmins() throws NoSuchElementException {
 		return employeeService.findSuperAdminDetails();
 	}
 
 	@GetMapping("/getQuestionnaire/{questionnaire_id}")
 	@PreAuthorize("hasRole('SUPERADMIN')or hasRole('ADMIN')")
 	@ResponseStatus(HttpStatus.OK)
-	public Questionnaire getQuestionnaire(@PathVariable int questionnaire_id) {
+	public Questionnaire getQuestionnaire(@PathVariable int questionnaire_id) throws NoSuchElementException {
 		Questionnaire question = questionnaireService.findById(questionnaire_id).get();
 		return question;
+	}
+
+	@GetMapping("/getQuestionnaireTitle")
+	@PreAuthorize("hasRole('SUPERADMIN')or hasRole('ADMIN')")
+	@ResponseStatus(HttpStatus.OK)
+	public List<String> getQuestionnaireTitle() throws NoSuchElementException {
+		return questionnaireService.getAllTitles();
 	}
 
 }

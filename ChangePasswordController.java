@@ -28,10 +28,14 @@ public class ChangePasswordController {
 	@PreAuthorize("hasRole('SUPERADMIN')")
 	@ResponseStatus(HttpStatus.CREATED)
 	public String changePassword(@RequestParam String password, @PathVariable String id) {
-		Optional<Employee> emp = employeeService.findById(id);
-		Employee employee = emp.get();
-		employee.setPassword(encoder.encode(password));
-		employeeService.save(employee);
-		return "Password Updated";
+		try {
+			Optional<Employee> emp = employeeService.findById(id);
+			Employee employee = emp.get();
+			employee.setPassword(encoder.encode(password));
+			employeeService.save(employee);
+			return "Password Updated";
+		} catch (Exception e) {
+			return "Bad Request";
+		}
 	}
 }

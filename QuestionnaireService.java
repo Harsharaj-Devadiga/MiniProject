@@ -1,5 +1,6 @@
 package com.MiniProject.FirstEvaluation.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,5 +21,9 @@ public class QuestionnaireService {
 
 	public Optional<Questionnaire> findById(int id) {
 		return repo.findById(id);
+	}
+	
+	public List<String> getAllTitles(){
+		return repo.getAllTitles();
 	}
 }

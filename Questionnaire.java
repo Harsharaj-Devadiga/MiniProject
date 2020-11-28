@@ -1,5 +1,7 @@
 package com.MiniProject.FirstEvaluation.models;
 
+import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -34,16 +36,16 @@ public class Questionnaire {
 	private String pptUrl;
 
 	@Column(name = "start_date")
-	private String startDate;
+	private LocalDate startDate;
 
 	@Column(name = "end_date")
-	private String endDate;
+	private LocalDate endDate;
 
 	@Column(name = "mail_body")
 	private String mailBody;
 
 	public Questionnaire(String title, String description, String buttonText, String buttonTitle, String checkboxText,
-			String startDate, String endDate, String mailBody) {
+			LocalDate startDate, LocalDate endDate, String mailBody) {
 		this.title = title;
 		this.description = description;
 		this.buttonText = buttonText;
@@ -122,19 +124,19 @@ public class Questionnaire {
 		this.pptUrl = pptUrl;
 	}
 
-	public String getStartDate() {
+	public LocalDate getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(String startDate) {
+	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
 	}
 
-	public String getEndDate() {
+	public LocalDate getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(String endDate) {
+	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
 	}
 }

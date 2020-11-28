@@ -20,8 +20,7 @@ import com.MiniProject.FirstEvaluation.security.services.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(
-		prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	UserDetailsServiceImpl userDetailsService;
@@ -52,14 +51,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.cors().and().csrf().disable()
-			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-			.authorizeRequests().antMatchers("/AllLogin").permitAll()
-			.antMatchers("/api/test/**").permitAll()
-			.anyRequest().authenticated();
+		http.cors().and().csrf().disable().exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
+				.antMatchers("/AllLogin").permitAll().antMatchers("/api/test/**").permitAll().anyRequest()
+				.authenticated();
 
 		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
 }
-

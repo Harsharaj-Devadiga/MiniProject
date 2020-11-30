@@ -34,7 +34,7 @@ public class FileStorageController {
 
 	@PostMapping("/uploadPptFile/{questionnaire_id}")
 	@PreAuthorize("hasRole('SUPERADMIN')or hasRole('ADMIN')")
-	public UploadFileResponse uploadSingleFile(@RequestParam("file") MultipartFile file,
+	public UploadFileResponse uploadPptFile(@RequestParam("file") MultipartFile file,
 			@PathVariable int questionnaire_id) {
 		Optional<Questionnaire> questionnaire = questionnaireService.findById(questionnaire_id);
 		Questionnaire question = questionnaire.get();
@@ -46,6 +46,17 @@ public class FileStorageController {
 
 		question.setPptUrl(fileDownloadUri);
 		questionnaireService.save(question);
+
+		return new UploadFileResponse(fileName, fileDownloadUri, file.getContentType(), file.getSize());
+	}
+
+	@PostMapping("/uploadUserFile")
+	@PreAuthorize("hasRole('SUPERADMIN')or hasRole('ADMIN')")
+	public UploadFileResponse uploadUserFile(@RequestParam("file") MultipartFile file) {
+		String fileName = fileStorageService.storeFile(file);
+
+		String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFile/")
+				.path(fileName).toUriString();
 
 		return new UploadFileResponse(fileName, fileDownloadUri, file.getContentType(), file.getSize());
 	}

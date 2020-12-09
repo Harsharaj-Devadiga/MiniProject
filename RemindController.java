@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.MiniProject.FirstEvaluation.models.Employee;
 import com.MiniProject.FirstEvaluation.models.QuestionnaireMapping;
+import com.MiniProject.FirstEvaluation.response.MessageResponse;
 import com.MiniProject.FirstEvaluation.service.EmployeeService;
 import com.MiniProject.FirstEvaluation.service.MailService;
 import com.MiniProject.FirstEvaluation.service.MapService;
@@ -40,8 +41,9 @@ public class RemindController {
 	@PostMapping("/remind/{questionnaire_id}")
 	@PreAuthorize("hasRole('SUPERADMIN')or hasRole('ADMIN')")
 	@ResponseStatus(HttpStatus.CREATED)
-	public void remindQuestionnaire(@PathVariable int questionnaire_id) throws NoSuchElementException{
+	public MessageResponse remindQuestionnaire(@PathVariable int questionnaire_id) throws NoSuchElementException {
 		List<QuestionnaireMapping> questionnaireMap = mapService.findByQuestionId(questionnaire_id);
+		String remind = "Mail sent to the employees as reminder";
 		for (QuestionnaireMapping quest : questionnaireMap) {
 			if ((quest.getStatus()) == 0) {
 				String empId = quest.getEmpId();
@@ -53,10 +55,12 @@ public class RemindController {
 				service.save(emp);
 
 				String subject = "Reminder for policy agreement";
-				String text = "Hello "+emp.getUsername()+"\n Reminder For Questionnaire " + questionnaire_id + "\n Please click the link given below \n Credentials : \n username :"+emp.getUsername()+"\n Password :"+password;
+				String text = "Hello " + emp.getUsername() + "\n Reminder For Questionnaire " + questionnaire_id
+						+ "\n Please click the link given below \n Credentials : \n username :" + emp.getUsername()
+						+ "\n Password :" + password;
 				mailservice.sendEmail(emp, subject, text);
-
 			}
 		}
+		return new MessageResponse(remind);
 	}
 }

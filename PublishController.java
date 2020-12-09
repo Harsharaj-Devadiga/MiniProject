@@ -7,20 +7,18 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.mail.MailException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.MiniProject.FirstEvaluation.models.Employee;
 import com.MiniProject.FirstEvaluation.models.Questionnaire;
 import com.MiniProject.FirstEvaluation.models.Role;
 import com.MiniProject.FirstEvaluation.repository.RoleRepository;
+import com.MiniProject.FirstEvaluation.response.MessageResponse;
 import com.MiniProject.FirstEvaluation.service.EmployeeService;
 import com.MiniProject.FirstEvaluation.service.MailService;
 import com.MiniProject.FirstEvaluation.service.MapService;
@@ -49,9 +47,7 @@ public class PublishController {
 
 	@PostMapping("/publish/{questionnaire_id}")
 	@PreAuthorize("hasRole('SUPERADMIN')or hasRole('ADMIN')")
-	@ResponseStatus(HttpStatus.CREATED)
-	public MailException addUser(@RequestBody List<Employee> employeeList, @PathVariable int questionnaire_id)
-			throws NoSuchElementException {
+	public MessageResponse addUser(@RequestBody List<Employee> employeeList, @PathVariable int questionnaire_id) {
 		try {
 			Optional<Questionnaire> questionnaire = questionnaireService.findById(questionnaire_id);
 			Questionnaire question = questionnaire.get();
@@ -73,9 +69,9 @@ public class PublishController {
 						+ employee.getUsername() + "\n Password : " + password + "\n Thank you ";
 				mailservice.sendEmail(employee, subject, text);
 			}
-		} catch (MailException mailException) {
-			return mailException;
+			return new MessageResponse("Questionnaire has been published to the given set of employees");
+		} catch (NoSuchElementException exception) {
+			return new MessageResponse("NOT_FOUND");
 		}
-		return null;
 	}
 }

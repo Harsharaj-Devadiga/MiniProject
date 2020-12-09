@@ -6,11 +6,9 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.MiniProject.FirstEvaluation.models.Questionnaire;
@@ -30,7 +28,6 @@ public class PendingCompletedAction {
 
 	@GetMapping("/completedQuestionnaire/{emp_id}")
 	@PreAuthorize("hasRole('SUPERADMIN')or hasRole('ADMIN')or hasRole('USER')")
-	@ResponseStatus(HttpStatus.CREATED)
 	public List<ActionResponse> completedQuestionnaire(@PathVariable String emp_id) throws NoSuchElementException {
 		List<QuestionnaireMapping> questionMap = mapService.getStatus(emp_id, 1);
 		List<ActionResponse> completedList = new ArrayList<ActionResponse>();
@@ -47,7 +44,6 @@ public class PendingCompletedAction {
 
 	@GetMapping("/pendingQuestionnaire/{emp_id}")
 	@PreAuthorize("hasRole('SUPERADMIN')or hasRole('ADMIN')or hasRole('USER')")
-	@ResponseStatus(HttpStatus.CREATED)
 	public List<ActionResponse> pendingQuestionnaire(@PathVariable String emp_id) throws NoSuchElementException {
 		List<QuestionnaireMapping> questionMap = mapService.getStatus(emp_id, 0);
 		List<ActionResponse> completedList = new ArrayList<ActionResponse>();

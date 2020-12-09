@@ -14,6 +14,6 @@ public interface QuestionnaireRepository extends JpaRepository<Questionnaire, In
 
 	Optional<Questionnaire> findById(int Id);
 	
-	@Query(value="SELECT title FROM questionnaire", nativeQuery = true)
-	List<String> getAllTitles();
+	@Query(value="SELECT * FROM questionnaire", nativeQuery = true)
+	List<Questionnaire> getAllTitles();
 }

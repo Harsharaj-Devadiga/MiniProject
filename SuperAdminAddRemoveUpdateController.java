@@ -7,21 +7,21 @@ import java.util.Set;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.MiniProject.FirstEvaluation.models.Employee;
 import com.MiniProject.FirstEvaluation.models.Role;
 import com.MiniProject.FirstEvaluation.repository.RoleRepository;
+import com.MiniProject.FirstEvaluation.response.MessageResponse;
 import com.MiniProject.FirstEvaluation.service.EmployeeService;
+import com.MiniProject.FirstEvaluation.service.MailService;
 
 @RestController
 public class SuperAdminAddRemoveUpdateController {
@@ -35,10 +35,12 @@ public class SuperAdminAddRemoveUpdateController {
 	@Autowired
 	PasswordEncoder encoder;
 
+	@Autowired
+	private MailService mailservice;
+
 	@PostMapping("/addAdmin")
 	@PreAuthorize("hasRole('SUPERADMIN')")
-	@ResponseStatus(HttpStatus.CREATED)
-	public String addAdmin(@RequestBody Employee employee) {
+	public MessageResponse addAdmin(@RequestBody Employee employee) {
 		try {
 			Set<Role> role = new HashSet<>();
 			Role adminRole = roleRepository.findByName("ROLE_ADMIN")
@@ -51,16 +53,20 @@ public class SuperAdminAddRemoveUpdateController {
 			String password = employee.generatePassword();
 			employee.setPassword(encoder.encode(password));
 			employeeService.save(employee);
-			return "Admin Saved Successfully With Password " + password;
+			String subject = "You are added as an admin";
+			String text = "Hello " + employee.getUsername() + "\n "
+					+ "You are added as an admin and given below are the login credentials " + "\n Username : "
+					+ employee.getUsername() + "\n Password : " + password + "\n Thank you ";
+			mailservice.sendEmail(employee, subject, text);
+			return new MessageResponse("Admin added successfully");
 		} catch (NoSuchElementException e) {
-			return "NOT_FOUND";
+			return new MessageResponse("NOT_FOUND");
 		}
 	}
 
 	@PostMapping("/addSuperAdmin")
 	@PreAuthorize("hasRole('SUPERADMIN')")
-	@ResponseStatus(HttpStatus.CREATED)
-	public String addSuperAdmin(@RequestBody Employee employee) {
+	public MessageResponse addSuperAdmin(@RequestBody Employee employee) {
 		try {
 			Set<Role> role = new HashSet<>();
 			Role superAdminRole = roleRepository.findByName("ROLE_SUPERADMIN")
@@ -73,42 +79,45 @@ public class SuperAdminAddRemoveUpdateController {
 			String password = employee.generatePassword();
 			employee.setPassword(encoder.encode(password));
 			employeeService.save(employee);
-			return "SuperAdmin Saved Successfully With Password " + password;
+			String subject = "You are added as an Super Admin";
+			String text = "Hello " + employee.getUsername() + "\n "
+					+ "You are added as an Super Admin and given below are the login credentials " + "\n Username : "
+					+ employee.getUsername() + "\n Password : " + password + "\n Thank you ";
+			mailservice.sendEmail(employee, subject, text);
+			return new MessageResponse("SuperAdmin added successfully");
 		} catch (NoSuchElementException e) {
-			return "NOT_FOUND";
+			return new MessageResponse("NOT_FOUND");
 		}
 	}
 
 	@DeleteMapping("/deleteAdmin/{id}")
 	@PreAuthorize("hasRole('SUPERADMIN')")
-	@ResponseStatus(HttpStatus.CREATED)
 	@Transactional
-	public String deleteAdmin(@PathVariable String id) {
+	public MessageResponse deleteAdmin(@PathVariable String id) {
 		try {
 			employeeService.delete(id);
-			return "Admin with Employee Id " + id + " Deleted!";
+			return new MessageResponse("Admin with Id " + id + " Deleted");
+
 		} catch (NoSuchElementException e) {
-			return "NOT_FOUND";
+			return new MessageResponse("NOT_FOUND");
 		}
 	}
 
 	@DeleteMapping("/deleteSuperAdmin/{id}")
 	@PreAuthorize("hasRole('SUPERADMIN')")
-	@ResponseStatus(HttpStatus.CREATED)
 	@Transactional
-	public String deleteSuperAdmin(@PathVariable String id) {
+	public MessageResponse deleteSuperAdmin(@PathVariable String id) {
 		try {
 			employeeService.delete(id);
-			return "SuperAdmin with Employee Id " + id + " Deleted!";
+			return new MessageResponse("SuperAdmin with Id " + id + " Deleted");
 		} catch (NoSuchElementException e) {
-			return "NOT_FOUND";
+			return new MessageResponse("NOT_FOUND");
 		}
 	}
 
 	@PutMapping("/updateAdmin/{id}")
 	@PreAuthorize("hasRole('SUPERADMIN')")
-	@ResponseStatus(HttpStatus.CREATED)
-	public String updateAdmin(@RequestBody Employee employee, @PathVariable String id) {
+	public MessageResponse updateAdmin(@RequestBody Employee employee, @PathVariable String id) {
 		try {
 			Set<Role> role = new HashSet<>();
 			Role adminRole = roleRepository.findByName("ROLE_ADMIN")
@@ -119,16 +128,20 @@ public class SuperAdminAddRemoveUpdateController {
 			String password = employee.generatePassword();
 			employee.setPassword(encoder.encode(password));
 			employeeService.save(employee);
-			return "Admin Updated Successfully with password " + password;
+			String subject = "Your admin details are updated";
+			String text = "Hello " + employee.getUsername() + "\n "
+					+ "Your an admin details are updated and given below are the login credentials " + "\n Username : "
+					+ employee.getUsername() + "\n Password : " + password + "\n Thank you ";
+			mailservice.sendEmail(employee, subject, text);
+			return new MessageResponse("Admin updated successfully");
 		} catch (NoSuchElementException e) {
-			return "NOT_FOUND";
+			return new MessageResponse("NOT_FOUND");
 		}
 	}
 
 	@PutMapping("/updateSuperAdmin/{id}")
 	@PreAuthorize("hasRole('SUPERADMIN')")
-	@ResponseStatus(HttpStatus.CREATED)
-	public String updateSuperAdmin(@RequestBody Employee employee, @PathVariable String id) {
+	public MessageResponse updateSuperAdmin(@RequestBody Employee employee, @PathVariable String id) {
 		try {
 			Set<Role> role = new HashSet<>();
 			Role adminRole = roleRepository.findByName("ROLE_SUPERADMIN")
@@ -139,9 +152,14 @@ public class SuperAdminAddRemoveUpdateController {
 			String password = employee.generatePassword();
 			employee.setPassword(encoder.encode(password));
 			employeeService.save(employee);
-			return "SuperAdmin Updates Successfully with password " + password;
+			String subject = "Your Super admin details are updated";
+			String text = "Hello " + employee.getUsername() + "\n "
+					+ "Your an Super admin details are updated and given below are the login credentials "
+					+ "\n Username : " + employee.getUsername() + "\n Password : " + password + "\n Thank you ";
+			mailservice.sendEmail(employee, subject, text);
+			return new MessageResponse("SuperAdmin update successfully");
 		} catch (NoSuchElementException e) {
-			return "NOT_FOUND";
+			return new MessageResponse("NOT_FOUND");
 		}
 	}
 }

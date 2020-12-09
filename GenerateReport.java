@@ -40,7 +40,7 @@ public class GenerateReport {
 			Employee emp = employee.get();
 			String username = emp.getUsername();
 			int status = map.getStatus();
-			ReportResponse report=new ReportResponse(empId, username, status);
+			ReportResponse report = new ReportResponse(empId, username, status);
 			reportList.add(report);
 		}
 		return reportList;

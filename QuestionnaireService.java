@@ -23,7 +23,7 @@ public class QuestionnaireService {
 		return repo.findById(id);
 	}
 	
-	public List<String> getAllTitles(){
+	public List<Questionnaire> getAllTitles(){
 		return repo.getAllTitles();
 	}
 }

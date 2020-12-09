@@ -31,11 +31,15 @@ public class EmployeeService {
 		return repo.findByEmail(mail);
 	}
 
-	public List<String> findAdminDetails() {
+	public List<Employee> findAdminDetails() {
 		return repo.findAdminDetails();
 	}
 
-	public List<String> findSuperAdminDetails() {
+	public List<Employee> findSuperAdminDetails() {
 		return repo.findSuperAdminDetails();
 	}
+	
+//	public void deleteAdmin(String emp_id) {
+//		 repo.deleteAdmins(emp_id);
+//	}
 }

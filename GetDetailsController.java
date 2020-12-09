@@ -1,17 +1,19 @@
 package com.MiniProject.FirstEvaluation.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.MiniProject.FirstEvaluation.models.Employee;
 import com.MiniProject.FirstEvaluation.models.Questionnaire;
+import com.MiniProject.FirstEvaluation.response.AdminSuperAdminResponse;
+import com.MiniProject.FirstEvaluation.response.QuestionnaireTitleResponse;
 import com.MiniProject.FirstEvaluation.service.EmployeeService;
 import com.MiniProject.FirstEvaluation.service.QuestionnaireService;
 
@@ -26,21 +28,32 @@ public class GetDetailsController {
 
 	@GetMapping("/getAdmins")
 	@PreAuthorize("hasRole('SUPERADMIN')")
-	@ResponseStatus(HttpStatus.OK)
-	public List<String> getAdmins() throws NoSuchElementException {
-		return employeeService.findAdminDetails();
+	public List<AdminSuperAdminResponse> getAdmins() throws NoSuchElementException {
+		List<Employee> employee = employeeService.findAdminDetails();
+		List<AdminSuperAdminResponse> adminList = new ArrayList<AdminSuperAdminResponse>();
+		for (Employee emp : employee) {
+			AdminSuperAdminResponse admins = new AdminSuperAdminResponse(emp.getId(), emp.getUsername(),
+					emp.getEmail());
+			adminList.add(admins);
+		}
+		return adminList;
 	}
 
 	@GetMapping("/getSuperAdmins")
 	@PreAuthorize("hasRole('SUPERADMIN')")
-	@ResponseStatus(HttpStatus.OK)
-	public List<String> getSuperAdmins() throws NoSuchElementException {
-		return employeeService.findSuperAdminDetails();
+	public List<AdminSuperAdminResponse> getSuperAdmins() throws NoSuchElementException {
+		List<Employee> employee = employeeService.findSuperAdminDetails();
+		List<AdminSuperAdminResponse> superAdminList = new ArrayList<AdminSuperAdminResponse>();
+		for (Employee emp : employee) {
+			AdminSuperAdminResponse superAdmins = new AdminSuperAdminResponse(emp.getId(), emp.getUsername(),
+					emp.getEmail());
+			superAdminList.add(superAdmins);
+		}
+		return superAdminList;
 	}
 
 	@GetMapping("/getQuestionnaire/{questionnaire_id}")
 	@PreAuthorize("hasRole('SUPERADMIN')or hasRole('ADMIN')")
-	@ResponseStatus(HttpStatus.OK)
 	public Questionnaire getQuestionnaire(@PathVariable int questionnaire_id) throws NoSuchElementException {
 		Questionnaire question = questionnaireService.findById(questionnaire_id).get();
 		return question;
@@ -48,9 +61,14 @@ public class GetDetailsController {
 
 	@GetMapping("/getQuestionnaireTitle")
 	@PreAuthorize("hasRole('SUPERADMIN')or hasRole('ADMIN')")
-	@ResponseStatus(HttpStatus.OK)
-	public List<String> getQuestionnaireTitle() throws NoSuchElementException {
-		return questionnaireService.getAllTitles();
+	public List<QuestionnaireTitleResponse> getQuestionnaireTitle() throws NoSuchElementException {
+		List<Questionnaire> questionnaire = questionnaireService.getAllTitles();
+		List<QuestionnaireTitleResponse> questionnaireTitle = new ArrayList<QuestionnaireTitleResponse>();
+		for (Questionnaire quest : questionnaire) {
+			QuestionnaireTitleResponse questTitle = new QuestionnaireTitleResponse(quest.getTitle());
+			questionnaireTitle.add(questTitle);
+		}
+		return questionnaireTitle;
 	}
 
 }
